@@ -84,7 +84,7 @@ namespace GAME
 
 class CGameClient;
 typedef boost::shared_ptr<CGameClient> GameClientPtr;
-typedef std::vector<GameClientPtr>     GameClientVector;
+typedef std::vector<CGameClient>       GameClientVector;
 
 class CGameClient : public ADDON::CAddonDll<DllGameClient, GameClient, game_client_properties>
 {
