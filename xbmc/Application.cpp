@@ -277,6 +277,9 @@
 #include "utils/XMLUtils.h"
 #include "addons/AddonInstaller.h"
 
+/* Game-related include files */
+#include "games/GameManager.h"
+
 #ifdef HAS_PERFORMANCE_SAMPLE
 #include "utils/PerformanceSample.h"
 #else
@@ -1518,6 +1521,8 @@ bool CApplication::Initialize()
   CJoystickManager::Get().SetEnabled(CSettings::Get().GetBool("input.enablejoystick") &&
                     CPeripheralImon::GetCountOfImonsConflictWithDInput() == 0);
 #endif
+
+  GAMES::CGameManager::Get().Start();
 
   return true;
 }
@@ -3346,6 +3351,7 @@ bool CApplication::Cleanup()
     g_windowManager.Remove(WINDOW_SETTINGS_SERVICE);
     g_windowManager.Remove(WINDOW_SETTINGS_APPEARANCE);
     g_windowManager.Remove(WINDOW_SETTINGS_MYPVR);
+    g_windowManager.Remove(WINDOW_SETTINGS_MYGAMES);
     g_windowManager.Remove(WINDOW_DIALOG_KAI_TOAST);
 
     g_windowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
@@ -3460,6 +3466,7 @@ void CApplication::Stop(int exitCode)
     m_pPlayer->ClosePlayer();
 
     StopPVRManager();
+    GAMES::CGameManager::Get().Stop();
     StopServices();
     //Sleep(5000);
 
