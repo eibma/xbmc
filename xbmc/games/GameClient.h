@@ -24,6 +24,7 @@
 #include "GameClientDLL.h"
 #include "GameFileLoader.h"
 #include "games/libretro/LibretroCallbacks.h"
+#include "games/savegames/Savestate.h"
 #include "games/tags/GameInfoTagLoader.h"
 #include "SerialState.h"
 #include "threads/CriticalSection.h"
@@ -115,6 +116,47 @@ namespace GAMES
      * Returns false if an exception is thrown in retro_run().
      */
     bool RunFrame();
+    
+    /**
+     * Load the serialized state from the auto-save slot (filename looks like
+     * feba62c2.sav). Returns true if the next call to Load() or Save() is
+     * expected to succeed (such as if the file can't be loaded because it
+     * doesn't exist, but Save() will create the file and Load() and Save()
+     * will work after that).
+     *
+     * Savestates are placed in special://savegames/gameclient.id/
+     */
+    bool AutoLoad();
+    
+    /**
+     * Load the serialized state from the numbered slot (filename looks like
+     * feba62c2_1.sav).
+     */
+    bool Load(unsigned int slot);
+    
+    /**
+     * Load the serialized state from the specified path.
+     */
+    bool Load(const CStdString &saveStatePath);
+    
+    /**
+     * Commit the current serialized state to the local drive (filename looks
+     * like feba62c2.sav).
+     */
+    bool AutoSave();
+    
+    /**
+     * Commit the current serialized state to the local drive (filename looks
+     * like feba62c2_1.sav).
+     */
+    bool Save(unsigned int slot);
+    
+    /**
+     * Commit the current serialized state to the local drive. The CRC of the
+     * label is concatenated to the CRC of the game file, and the resulting
+     * filename looks like feba62c2_bdcb488a.sav
+     */
+    bool Save(const CStdString &label);
 
     /**
      * Rewind gameplay 'frames' frames.
@@ -180,7 +222,23 @@ namespace GAMES
      * Initialize the game client serialization subsystem. If successful,
      * m_bRewindEnabled and m_serialSize are set appropriately.
      */
-    void InitSerialization();
+    void InitSerialization(const CFileItem& file);
+
+    /**
+     * Given the strategies above, order them in a way that respects
+     * Init the savestate file by setting the game path, game client and game
+     * CRC. Most field, such as playtime, are preserved.
+     *
+     * gameBuffer and length are convenience variables to avoid hitting the
+     * disk for CRC calculation when the game file is already loaded in RAM.
+     */
+    bool InitSaveState(const void *gameBuffer = NULL, size_t length = 0);
+
+    // Internal load function. 
+    bool Load();
+
+    // Internal save function.
+    bool Save();
 
     /**
      * Given the strategies above, order them in the way that respects
@@ -234,6 +292,7 @@ namespace GAMES
     unsigned int                 m_serialSize;
     bool                         m_bRewindEnabled;
     CSerialState                 m_serialState;
+    CSavestate                   m_saveState;
 
     // If rewinding is disabled, use a buffer to avoid re-allocation when saving games
     std::vector<uint8_t>         m_savestateBuffer;
