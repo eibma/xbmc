@@ -390,7 +390,8 @@ void CAdvancedSettings::Initialize()
 
   m_databaseMusic.Reset();
   m_databaseVideo.Reset();
-
+  m_databaseSavestates.Reset();
+  
   m_pictureExtensions = ".png|.jpg|.jpeg|.bmp|.gif|.ico|.tif|.tiff|.tga|.pcx|.cbz|.zip|.cbr|.rar|.dng|.nef|.cr2|.crw|.orf|.arw|.erf|.3fr|.dcr|.x3f|.mef|.raf|.mrw|.pef|.sr2|.rss";
   m_musicExtensions = ".nsv|.m4a|.flac|.aac|.strm|.pls|.rm|.rma|.mpa|.wav|.wma|.ogg|.mp3|.mp2|.m3u|.mod|.amf|.669|.dmf|.dsm|.far|.gdm|.imf|.it|.m15|.med|.okt|.s3m|.stm|.sfx|.ult|.uni|.xm|.sid|.ac3|.dts|.cue|.aif|.aiff|.wpl|.ape|.mac|.mpc|.mp+|.mpp|.shn|.zip|.rar|.wv|.nsf|.spc|.gym|.adx|.dsp|.adp|.ymf|.ast|.afc|.hps|.xsp|.xwav|.waa|.wvs|.wam|.gcm|.idsp|.mpdsp|.mss|.spt|.rsd|.mid|.kar|.sap|.cmc|.cmr|.dmc|.mpt|.mpd|.rmt|.tmc|.tm8|.tm2|.oga|.url|.pxml|.tta|.rss|.cm3|.cms|.dlt|.brstm|.wtv|.mka|.tak";
   m_videoExtensions = ".m4v|.3g2|.3gp|.nsv|.tp|.ts|.ty|.strm|.pls|.rm|.rmvb|.m3u|.m3u8|.ifo|.mov|.qt|.divx|.xvid|.bivx|.vob|.nrg|.img|.iso|.pva|.wmv|.asf|.asx|.ogm|.m2v|.avi|.bin|.dat|.mpg|.mpeg|.mp4|.mkv|.avc|.vp3|.svq3|.nuv|.viv|.dv|.fli|.flv|.rar|.001|.wpl|.zip|.vdr|.dvr-ms|.xsp|.mts|.m2t|.m2ts|.evo|.ogv|.sdp|.avs|.rec|.url|.pxml|.vc1|.h264|.rcv|.rss|.mpls|.webm|.bdmv|.wtv";
@@ -1167,6 +1168,17 @@ void CAdvancedSettings::ParseSettingsFile(const CStdString &file)
     XMLUtils::GetString(pDatabase, "ca", m_databaseEpg.ca);
     XMLUtils::GetString(pDatabase, "capath", m_databaseEpg.capath);
     XMLUtils::GetString(pDatabase, "ciphers", m_databaseEpg.ciphers);
+  }
+  
+  pDatabase = pRootElement->FirstChildElement("savestatedatabase");
+  if (pDatabase)
+  {
+    XMLUtils::GetString(pDatabase, "type", m_databaseSavestates.type);
+    XMLUtils::GetString(pDatabase, "host", m_databaseSavestates.host);
+    XMLUtils::GetString(pDatabase, "port", m_databaseSavestates.port);
+    XMLUtils::GetString(pDatabase, "user", m_databaseSavestates.user);
+    XMLUtils::GetString(pDatabase, "pass", m_databaseSavestates.pass);
+    XMLUtils::GetString(pDatabase, "name", m_databaseSavestates.name);
   }
 
   pElement = pRootElement->FirstChildElement("enablemultimediakeys");

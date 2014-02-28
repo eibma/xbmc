@@ -43,6 +43,8 @@ public:
   virtual bool OpenFile(const CFileItem& file, const CPlayerOptions& options);
   virtual bool CloseFile(bool reopen = false);
 
+  virtual bool OnAction(const CAction &action);
+  
   virtual bool IsPlaying() const { return !m_bStop && m_file && m_gameClient; }
   virtual void Pause();
   virtual bool IsPaused() const { return m_playSpeed == 0; }
@@ -56,6 +58,9 @@ public:
   virtual void GetVideoInfo(CStdString& strVideoInfo) { strVideoInfo = "CRetroPlayer:GetVideoInfo"; }
   virtual void GetGeneralInfo(CStdString& strGeneralInfo) { strGeneralInfo = "CRetroPlayer:GetGeneralInfo"; }
 
+  virtual CStdString GetFilePath(){return m_file->GetPath();}
+  virtual CStdString GetGameClient(){return m_gameClient->ID();}
+  
   //virtual float GetActualFPS() { return 0.0f; }
   //virtual int GetSourceBitrate() { return 0; }
   virtual int  GetBitsPerSample() { return 8 * 2 * sizeof(int16_t); }
@@ -94,6 +99,12 @@ public:
   virtual void SeekTime(int64_t iTime = 0);
   virtual int64_t GetTime();
   virtual int64_t GetTotalTime();
+  
+  bool Save(unsigned int slot) { return m_gameClient && m_gameClient->Save(slot); }
+  bool Save(const CStdString &label) { return m_gameClient && m_gameClient->Save(label); }
+  bool Load(const CStdString &saveStatePath) { return m_gameClient && m_gameClient->Load(saveStatePath); }
+
+ 
 
   // TODO: Skip to next disk in multi-disc games (e.g. PSX)
   virtual bool SkipNext() { return false; }

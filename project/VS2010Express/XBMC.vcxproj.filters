@@ -331,6 +331,12 @@
     <Filter Include="games\windows">
       <UniqueIdentifier>{b27eff5a-49e1-4e7d-b4c2-f4e46d18629a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="games\savegames">
+      <UniqueIdentifier>{42e2939e-467c-4c7f-bb3e-b4860c19e9e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="dbwrappers\test">
+      <UniqueIdentifier>{43dbf5f1-ffdc-4fd5-8f6c-5f38f89b192f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\xbmc\win32\pch.cpp">
@@ -3199,6 +3205,21 @@
     </ClCompile>
     <ClCompile Include="..\..\xbmc\input\JoystickHat.cpp">
       <Filter>input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\savegames\SavestateDatabase.cpp">
+      <Filter>games\savegames</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\games\savegames\Savestate.cpp">
+      <Filter>games\savegames</Filter>
+    </ClCompile> 
+    <ClCompile Include="..\..\xbmc\games\savegames\GUIDialogGameSaves.cpp">
+      <Filter>games\savegames</Filter>
+    </ClCompile>
+     <ClCompile Include="..\..\xbmc\dbwrappers\DynamicDatabase.cpp">
+      <Filter>dbwrappers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbmc\dbwrappers\test\TestDynamicDatabase.cpp">
+      <Filter>dbwrappers\test</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -6279,6 +6300,21 @@
     </ClInclude>
     <ClInclude Include="..\..\xbmc\input\JoystickHat.h">
       <Filter>input</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\savegames\SavestateDatabase.h">
+      <Filter>games\savegames</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\games\savegames\Savestate.h">
+      <Filter>games\savegames</Filter>
+    </ClInclude>    
+    <ClInclude Include="..\..\xbmc\games\savegames\GUIDialogGameSaves.h">
+      <Filter>games\savegames</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\dbwrappers\DynamicDatabase.h">
+      <Filter>dbwrappers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbmc\utils\IDeserializable.h">
+      <Filter>utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -25,6 +25,7 @@
 #include "dialogs/GUIDialogKaiToast.h"
 #include "filesystem/Directory.h"
 #include "GameFileLoader.h"
+#include "games/savegames/Savestate.h"
 #include "profiles/ProfilesManager.h"
 #include "threads/SingleLock.h"
 #include "URL.h"
@@ -184,6 +185,14 @@ bool CGameManager::RegisterAddon(const GameClientPtr &client)
   registeredClient = client;
   CLog::Log(LOGDEBUG, "GameManager: Registered add-on %s", client->ID().c_str());
 
+  // Check to see if the savegame folder for this game client exists
+  CStdString dir(URIUtils::AddFileToFolder(CProfilesManager::Get().GetSavegamesFolder(), client->ID()));
+  if (!CDirectory::Exists(dir))
+  {
+    CLog::Log(LOGINFO, "Create new savegames folder: %s", dir.c_str());
+    CDirectory::Create(dir);
+  }
+  
   // If a file was queued by RetroPlayer, try to launch the newly installed game client
   m_fileLauncher.Launch(client);
 

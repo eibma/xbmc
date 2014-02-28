@@ -280,6 +280,7 @@
 /* Game-related include files */
 #include "games/GameManager.h"
 #include "games/windows/GUIWindowGames.h"
+#include "games/savegames/GUIDialogGameSaves.h"
 #include "input/IInputHandler.h"
 
 #ifdef HAS_PERFORMANCE_SAMPLE
@@ -1449,6 +1450,7 @@ bool CApplication::Initialize()
     g_windowManager.Add(new CGUIWindowWeather);
     g_windowManager.Add(new CGUIWindowStartup);
     g_windowManager.Add(new CGUIWindowGames);
+    g_windowManager.Add(new CGUIDialogGameSaves);
 
     /* window id's 3000 - 3100 are reserved for python */
 
@@ -2863,6 +2865,13 @@ bool CApplication::OnAction(const CAction &action)
     }
   }
 
+  if (m_pPlayer->IsPlayingGame() && ((ACTION_SAVE <= action.GetID() && action.GetID() <= ACTION_SAVE9) ||
+                                    (ACTION_LOAD <= action.GetID() && action.GetID() <= ACTION_LOAD9)))
+  {
+    m_pPlayer->OnAction(action.GetID());
+    return true;
+  }
+  
   if (g_peripherals.OnAction(action))
     return true;
 
@@ -3373,6 +3382,7 @@ bool CApplication::Cleanup()
 
     g_windowManager.Remove(WINDOW_DIALOG_SEEK_BAR);
     g_windowManager.Remove(WINDOW_DIALOG_VOLUME_BAR);
+    g_windowManager.Delete(WINDOW_DIALOG_GAME_SAVES);
 
     CAddonMgr::Get().DeInit();
 

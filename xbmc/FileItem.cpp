@@ -553,6 +553,7 @@ const CFileItem& CFileItem::operator=(const CFileItem& item)
   }
 
   m_lStartOffset = item.m_lStartOffset;
+  m_startSaveState = item.m_startSaveState;
   m_lStartPartNumber = item.m_lStartPartNumber;
   m_lEndOffset = item.m_lEndOffset;
   m_strDVDLabel = item.m_strDVDLabel;
@@ -592,6 +593,7 @@ void CFileItem::Reset()
   m_lStartOffset = 0;
   m_lStartPartNumber = 1;
   m_lEndOffset = 0;
+  m_startSaveState = "";
   m_iprogramCount = 0;
   m_idepth = 1;
   m_iLockMode = LOCK_MODE_EVERYONE;
@@ -642,6 +644,7 @@ void CFileItem::Archive(CArchive& ar)
     ar << m_lStartOffset;
     ar << m_lStartPartNumber;
     ar << m_lEndOffset;
+    ar << m_startSaveState;
     ar << m_iLockMode;
     ar << m_strLockCode;
     ar << m_iBadPwdCount;
@@ -696,6 +699,7 @@ void CFileItem::Archive(CArchive& ar)
     ar >> m_lStartOffset;
     ar >> m_lStartPartNumber;
     ar >> m_lEndOffset;
+    ar >> m_startSaveState;
     int temp;
     ar >> temp;
     m_iLockMode = (LockType)temp;
