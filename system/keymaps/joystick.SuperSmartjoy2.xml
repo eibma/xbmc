@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keymap>
+  <FullscreenGame>
+    <joystick name="Smartjoy Family Super Smartjoy 2">
+      <button id="2">JoypadA</button>
+      <button id="3">JoypadB</button>
+      <button id="1">JoypadX</button>
+      <button id="4">JoypadY</button>
+      <button id="7">JoypadL</button>
+      <button id="8">JoypadR</button>
+      <button id="5">JoypadSelect</button>
+      <button id="6">JoypadStart</button>
+      <button id="11">JoypadUp</button>
+      <axis id="2" limit="-1">JoypadUp</axis>
+      <axis id="2" limit="+1">JoypadDown</axis>
+      <axis id="1" limit="-1">JoypadLeft</axis>
+      <axis id="1" limit="+1">JoypadRight</axis>
+    </joystick>
+</FullscreenGame>
+</keymap>
