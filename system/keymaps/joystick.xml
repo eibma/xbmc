@@ -30,7 +30,7 @@
 <!-- 4               Right Stick L/R  -->
 <!-- 5               Right Stick U/D  -->
 
-<keymap>
+<keymapoff>
   <global>
     <joystick>
       <!-- A selects. B goes back. X gets context menu. Y goes fullscreen and back. -->
@@ -345,4 +345,4 @@
       <button id="9">Close</button>
     </joystick>
   </ProfileSettings>
-</keymap>
+</keymapoff>
