@@ -28,7 +28,6 @@
 /**
  * Digital axis commands act like buttons, but we don't want the IDs to intersect.
  */
-#define DIGITAL_AXIS_MASK  1000 // use decimal, easier to recover from the logs
 
 #ifndef ARRAY_SIZE
 #define ARRAY_SIZE(x)  (sizeof((x)) / sizeof((x)[0]))
@@ -172,7 +171,7 @@ void CRetroPlayerInput::ProcessButtonUp(unsigned int controllerID, unsigned int 
   std::map<DeviceItem, int>::iterator it = m_deviceItems.find(item);
   if (it != m_deviceItems.end())
   {
-    CLog::Log(LOGDEBUG, "-> RetroPlayerInput: Controller=%u, button up=%u, id=%d", controllerID, buttonID + 1, it->second);
+    //CLog::Log(LOGDEBUG, "-> RetroPlayerInput: Controller=%u, button up=%u, id=%d", controllerID, buttonID + 1, it->second);
     m_joypadState[controllerID][it->second] = 0;
     m_deviceItems.erase(it);
   }
@@ -180,12 +179,12 @@ void CRetroPlayerInput::ProcessButtonUp(unsigned int controllerID, unsigned int 
 
 void CRetroPlayerInput::ProcessDigitalAxisDown(unsigned int controllerID, unsigned int buttonID, const CAction &action)
 {
-  return ProcessButtonDown(controllerID + DIGITAL_AXIS_MASK, buttonID, action);
+  return ProcessButtonDown(controllerID, buttonID, action);
 }
 
 void CRetroPlayerInput::ProcessDigitalAxisUp(unsigned int controllerID, unsigned int buttonID)
 {
-  return ProcessButtonUp(controllerID + DIGITAL_AXIS_MASK, buttonID);
+  return ProcessButtonUp(controllerID, buttonID);
 }
 
 void CRetroPlayerInput::ProcessHatDown(unsigned int controllerID, unsigned int hatID, unsigned char hatDir, const CAction &action)
