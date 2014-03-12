@@ -171,7 +171,7 @@ void CRetroPlayerInput::ProcessButtonUp(unsigned int controllerID, unsigned int 
   std::map<DeviceItem, int>::iterator it = m_deviceItems.find(item);
   if (it != m_deviceItems.end())
   {
-    //CLog::Log(LOGDEBUG, "-> RetroPlayerInput: Controller=%u, button up=%u, id=%d", controllerID, buttonID + 1, it->second);
+    CLog::Log(LOGDEBUG, "-> RetroPlayerInput: Controller=%u, button up=%u, id=%d", controllerID, buttonID + 1, it->second);
     m_joypadState[controllerID][it->second] = 0;
     m_deviceItems.erase(it);
   }
@@ -179,12 +179,12 @@ void CRetroPlayerInput::ProcessButtonUp(unsigned int controllerID, unsigned int 
 
 void CRetroPlayerInput::ProcessDigitalAxisDown(unsigned int controllerID, unsigned int buttonID, const CAction &action)
 {
-  return ProcessButtonDown(controllerID, buttonID, action);
+  return ProcessButtonDown(controllerID, buttonID+DIGITAL_AXIS_MASK, action);
 }
 
 void CRetroPlayerInput::ProcessDigitalAxisUp(unsigned int controllerID, unsigned int buttonID)
 {
-  return ProcessButtonUp(controllerID, buttonID);
+  return ProcessButtonUp(controllerID, buttonID+DIGITAL_AXIS_MASK);
 }
 
 void CRetroPlayerInput::ProcessHatDown(unsigned int controllerID, unsigned int hatID, unsigned char hatDir, const CAction &action)

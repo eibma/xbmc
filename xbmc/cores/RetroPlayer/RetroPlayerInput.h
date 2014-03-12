@@ -24,6 +24,7 @@
 #include "input/IInputHandler.h"
 
 #define GAMEPAD_MAX_CONTROLLERS  4
+#define  DIGITAL_AXIS_MASK 1000
 
 #include <map>
 #include <stdint.h>
