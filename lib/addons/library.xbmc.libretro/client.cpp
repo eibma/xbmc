@@ -171,6 +171,48 @@ const char* GetMininumGameAPIVersion(void)
   return GAME_MIN_API_VERSION;
 }
 
+// file helper function from RetroArch
+static long read_file(const char *path, void **buf)
+{
+   long rc = 0, len = 0;
+   void *rom_buf = NULL;
+
+   FILE *file = fopen(path, "rb");
+
+   if (!file)
+      goto error;
+
+   fseek(file, 0, SEEK_END);
+   len = ftell(file);
+   rewind(file);
+   rom_buf = malloc(len + 1);
+   if (!rom_buf)
+   {
+      XBMC->Log(LOG_ERROR, "Couldn't allocate memory to load savegame");
+      goto error;
+   }
+
+   if ((rc = fread(rom_buf, 1, len, file)) < len)
+      XBMC->Log(LOG_ERROR, "Didn't read whole file.");
+
+   *buf = rom_buf;
+
+   /* Allow for easy reading of strings to be safe.
+    * Will only work with sane character formatting (Unix). */
+   ((char*)rom_buf)[len] = '\0';
+   fclose(file);
+   return rc;
+
+error:
+   if (file)
+      fclose(file);
+   free(rom_buf);
+   *buf = NULL;
+   return -1;
+
+}
+
+
 GAME_ERROR LoadGame(const char* url)
 {
   if (!CLIENT)
@@ -196,13 +238,65 @@ GAME_ERROR LoadGame(const char* url)
   retro_game_info gameInfo;
   if (GAME_INFO[0]->GetMemoryStruct(gameInfo))
   {
-    if (CLIENT->retro_load_game(&gameInfo))
+    if (CLIENT->retro_load_game(&gameInfo)){
+
+      GAME_INFO[0]->GetPathStruct(gameInfo);
+
+      // proof of concept save code
+      void* data = CLIENT->retro_get_memory_data(0);
+      size_t size = CLIENT->retro_get_memory_size(0);
+
+      if (size == 0 || !data)
+        return GAME_ERROR_FAILED;
+
+      string path(gameInfo.path);
+      string extension(".srm");     
+
+      void *buf = NULL;
+      ssize_t rc = read_file((path+extension).c_str(), &buf);
+      if (rc > 0)
+      {
+          if (rc > (ssize_t)size)
+          {
+            XBMC->Log(LOG_ERROR,"SRAM is larger than implementation expects, doing partial load (truncating %u bytes to %u).\n",
+                  (unsigned)rc, (unsigned)size);
+            rc = size;
+          }
+          memcpy(data, buf, rc);
+          XBMC->Log(LOG_INFO,"SRAM loaded");
+      }
+
+      free(buf);
+          
       return GAME_ERROR_NO_ERROR;
+    }
   }
 
   // Fall back to loading via path
   GAME_INFO[0]->GetPathStruct(gameInfo);
   bool result = CLIENT->retro_load_game(&gameInfo);
+  
+  // proof of concept save code
+  void* data = CLIENT->retro_get_memory_data(0);
+  size_t size = CLIENT->retro_get_memory_size(0);
+  
+  string path(gameInfo.path);
+  string extension(".srm");     
+   
+  void *buf = NULL;
+  ssize_t rc = read_file((path+extension).c_str(), &buf);
+  if (rc > 0)
+  {
+     if (rc > (ssize_t)size)
+     {
+        XBMC->Log(LOG_ERROR,"SRAM is larger than implementation expects, doing partial load (truncating %u bytes to %u).\n",
+              (unsigned)rc, (unsigned)size);
+        rc = size;
+     }
+     memcpy(data, buf, rc);
+     XBMC->Log(LOG_INFO,"SRAM loaded");
+  }
+  free(buf);
 
   return result ? GAME_ERROR_NO_ERROR : GAME_ERROR_FAILED;
 }
@@ -250,6 +344,28 @@ GAME_ERROR UnloadGame(void)
 
   if (CLIENT)
   {
+    //proof of concept load code
+    void* data = CLIENT->retro_get_memory_data(0);
+    size_t size = CLIENT->retro_get_memory_size(0);
+    retro_game_info gameInfo;
+    GAME_INFO[0]->GetPathStruct(gameInfo);
+
+    string path(gameInfo.path);
+    string extension(".srm");     
+         
+    FILE *file = fopen((path+extension).c_str(), "wb");
+    if (file)
+    {
+       XBMC->Log(LOG_INFO, "SRAM to \"%s\"...", (path+extension).c_str());
+         
+       bool failed = false;
+       failed |= fwrite(data, 1, size, file) != size;
+       failed |= fflush(file) != 0;
+       failed |= fclose(file) != 0;
+       if (failed)
+          XBMC->Log(LOG_ERROR, "Failed to save SRAM. Disk might be full.");
+    }
+    
     CLIENT->retro_unload_game();
     error = GAME_ERROR_NO_ERROR;
   }
