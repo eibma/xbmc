@@ -179,12 +179,12 @@ void CRetroPlayerInput::ProcessButtonUp(unsigned int controllerID, unsigned int 
 
 void CRetroPlayerInput::ProcessDigitalAxisDown(unsigned int controllerID, unsigned int buttonID, const CAction &action)
 {
-  return ProcessButtonDown(controllerID + DIGITAL_AXIS_MASK, buttonID, action);
+  return ProcessButtonDown(controllerID, buttonID + DIGITAL_AXIS_MASK, action);
 }
 
 void CRetroPlayerInput::ProcessDigitalAxisUp(unsigned int controllerID, unsigned int buttonID)
 {
-  return ProcessButtonUp(controllerID + DIGITAL_AXIS_MASK, buttonID);
+  return ProcessButtonUp(controllerID, buttonID + DIGITAL_AXIS_MASK);
 }
 
 void CRetroPlayerInput::ProcessHatDown(unsigned int controllerID, unsigned int hatID, unsigned char hatDir, const CAction &action)
