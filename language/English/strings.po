@@ -12431,7 +12431,17 @@ msgctxt "#27018"
 msgid "Emulators"
 msgstr ""
 
-#empty strings from id 27019 to 29799
+#: system/settings/settings.xml
+msgctxt "#27019"
+msgid "Enable SRAM Save"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#27020"
+msgid "Enables to save the Game on exit."
+msgstr ""
+
+#empty strings from id 27021 to 29799
 
 #strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code
 

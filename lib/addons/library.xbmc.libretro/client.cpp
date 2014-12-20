@@ -27,6 +27,7 @@
 #include "libXBMC_game.h"
 #include "xbmc_addon_dll.h"
 #include "xbmc_game_dll.h"
+#include "settings/Settings.h"
 
 #include <string>
 #include <vector>
@@ -242,32 +243,34 @@ GAME_ERROR LoadGame(const char* url)
 
       GAME_INFO[0]->GetPathStruct(gameInfo);
 
-      // proof of concept save code
-      void* data = CLIENT->retro_get_memory_data(0);
-      size_t size = CLIENT->retro_get_memory_size(0);
-
-      if (size == 0 || !data)
-        return GAME_ERROR_FAILED;
-
-      string path(gameInfo.path);
-      string extension(".srm");     
-
-      void *buf = NULL;
-      ssize_t rc = read_file((path+extension).c_str(), &buf);
-      if (rc > 0)
+      if(CSettings::Get().GetBool("gamesgeneral.enablesramsave"))
       {
-          if (rc > (ssize_t)size)
-          {
-            XBMC->Log(LOG_ERROR,"SRAM is larger than implementation expects, doing partial load (truncating %u bytes to %u).\n",
-                  (unsigned)rc, (unsigned)size);
-            rc = size;
-          }
-          memcpy(data, buf, rc);
-          XBMC->Log(LOG_INFO,"SRAM loaded");
-      }
+        // proof of concept save code
+        void* data = CLIENT->retro_get_memory_data(0);
+        size_t size = CLIENT->retro_get_memory_size(0);
 
-      free(buf);
-          
+        if (size == 0 || !data)
+          return GAME_ERROR_FAILED;
+
+        string path(gameInfo.path);
+        string extension(".srm");     
+
+        void *buf = NULL;
+        ssize_t rc = read_file((path+extension).c_str(), &buf);
+        if (rc > 0)
+        {
+            if (rc > (ssize_t)size)
+            {
+              XBMC->Log(LOG_ERROR,"SRAM is larger than implementation expects, doing partial load (truncating %u bytes to %u).\n",
+                    (unsigned)rc, (unsigned)size);
+              rc = size;
+            }
+            memcpy(data, buf, rc);
+            XBMC->Log(LOG_INFO,"SRAM loaded");
+        }
+
+        free(buf);
+      }
       return GAME_ERROR_NO_ERROR;
     }
   }
@@ -277,26 +280,29 @@ GAME_ERROR LoadGame(const char* url)
   bool result = CLIENT->retro_load_game(&gameInfo);
   
   // proof of concept save code
-  void* data = CLIENT->retro_get_memory_data(0);
-  size_t size = CLIENT->retro_get_memory_size(0);
-  
-  string path(gameInfo.path);
-  string extension(".srm");     
-   
-  void *buf = NULL;
-  ssize_t rc = read_file((path+extension).c_str(), &buf);
-  if (rc > 0)
+  if(CSettings::Get().GetBool("gamesgeneral.enablesramsave"))
   {
-     if (rc > (ssize_t)size)
-     {
-        XBMC->Log(LOG_ERROR,"SRAM is larger than implementation expects, doing partial load (truncating %u bytes to %u).\n",
-              (unsigned)rc, (unsigned)size);
-        rc = size;
-     }
-     memcpy(data, buf, rc);
-     XBMC->Log(LOG_INFO,"SRAM loaded");
+    void* data = CLIENT->retro_get_memory_data(0);
+    size_t size = CLIENT->retro_get_memory_size(0);
+    
+    string path(gameInfo.path);
+    string extension(".srm");     
+    
+    void *buf = NULL;
+    ssize_t rc = read_file((path+extension).c_str(), &buf);
+    if (rc > 0)
+    {
+      if (rc > (ssize_t)size)
+      {
+          XBMC->Log(LOG_ERROR,"SRAM is larger than implementation expects, doing partial load (truncating %u bytes to %u).\n",
+                (unsigned)rc, (unsigned)size);
+          rc = size;
+      }
+      memcpy(data, buf, rc);
+      XBMC->Log(LOG_INFO,"SRAM loaded");
+    }
+    free(buf);
   }
-  free(buf);
 
   return result ? GAME_ERROR_NO_ERROR : GAME_ERROR_FAILED;
 }
@@ -344,26 +350,30 @@ GAME_ERROR UnloadGame(void)
 
   if (CLIENT)
   {
-    //proof of concept load code
-    void* data = CLIENT->retro_get_memory_data(0);
-    size_t size = CLIENT->retro_get_memory_size(0);
-    retro_game_info gameInfo;
-    GAME_INFO[0]->GetPathStruct(gameInfo);
-
-    string path(gameInfo.path);
-    string extension(".srm");     
-         
-    FILE *file = fopen((path+extension).c_str(), "wb");
-    if (file)
+    if(CSettings::Get().GetBool("gamesgeneral.enablesramsave"))
     {
-       XBMC->Log(LOG_INFO, "SRAM to \"%s\"...", (path+extension).c_str());
-         
-       bool failed = false;
-       failed |= fwrite(data, 1, size, file) != size;
-       failed |= fflush(file) != 0;
-       failed |= fclose(file) != 0;
-       if (failed)
-          XBMC->Log(LOG_ERROR, "Failed to save SRAM. Disk might be full.");
+
+      //proof of concept load code
+      void* data = CLIENT->retro_get_memory_data(0);
+      size_t size = CLIENT->retro_get_memory_size(0);
+      retro_game_info gameInfo;
+      GAME_INFO[0]->GetPathStruct(gameInfo);
+
+      string path(gameInfo.path);
+      string extension(".srm");     
+          
+      FILE *file = fopen((path+extension).c_str(), "wb");
+      if (file)
+      {
+        XBMC->Log(LOG_INFO, "SRAM to \"%s\"...", (path+extension).c_str());
+          
+        bool failed = false;
+        failed |= fwrite(data, 1, size, file) != size;
+        failed |= fflush(file) != 0;
+        failed |= fclose(file) != 0;
+        if (failed)
+            XBMC->Log(LOG_ERROR, "Failed to save SRAM. Disk might be full.");
+      }
     }
     
     CLIENT->retro_unload_game();
