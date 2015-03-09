@@ -12441,7 +12441,37 @@ msgctxt "#27020"
 msgid "Enables to save the Game on exit."
 msgstr ""
 
-#empty strings from id 27021 to 29799
+#: system/settings/settings.xml
+msgctxt "#27021"
+msgid "Savegame directory"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#27022"
+msgid "Set the directory for the save state file to be stored. "
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#27023"
+msgid "Same as ROM file"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#27024"
+msgid "Single directory"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#27025"
+msgid "SRAM Directory"
+msgstr ""
+
+#: system/settings/settings.xml
+msgctxt "#27026"
+msgid "Path to the directory where you would like to store your savegames"
+msgstr ""
+
+#empty strings from id 27027 to 29799
 
 #strings 29800 thru 29998 reserved strings used only in the default Project Mayhem III skin and not c++ code
 
